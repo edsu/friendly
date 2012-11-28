@@ -13,63 +13,24 @@
 
   <body>
 
-    <!-- Todo App Interface -->
+    <header>
+      <h1>Robots Are Our Friends</h1>
+    </header>
 
-    <div id="todoapp">
+    <section id="create-website">
+      <input id="new-website" placeholder="What website would you like to check?" type="text" />
+    </section>
 
-      <div class="title">
-        <h1>Robots Are Our Friends</h1>
-      </div>
-
-      <div class="content">
-
-        <div id="create-todo">
-          <input id="new-todo" placeholder="What needs to be done?" type="text" />
-          <span class="ui-tooltip-top" style="display:none;">Press Enter to save this task</span>
-        </div>
-
-        <div id="todos">
-          <input class="check mark-all-done" type="checkbox"/>
-          <label for="check-all">Mark all as complete</label>
-          <ul id="todo-list"></ul>
-        </div>
-
-        <div id="todo-stats"></div>
-
-      </div>
-
-    </div>
+    <section id="websites">
+      <ul id="websiteList"></ul>
+    </section>
 
     <!-- Templates -->
 
-    <script type="text/template" id="item-template">
-      <div class="todo <%= done ? 'done' : '' %>">
-        <div class="display">
-          <input class="check" type="checkbox" <%= done ? 'checked="checked"' : '' %> />
-          <label class="todo-content"><%= content %></label>
-          <span class="todo-destroy"></span>
-        </div>
-        <div class="edit">
-          <input class="todo-input" type="text" value="<%= content %>" />
-        </div>
-      </div>
-    </script>
-
-    <script type="text/template" id="stats-template">
-      <% if (total) { %>
-        <span class="todo-count">
-          <span class="number"><%= remaining %></span>
-          <span class="word"><%= remaining == 1 ? 'item' : 'items' %></span> left.
-        </span>
-      <% } %>
-      <% if (done) { %>
-        <span class="todo-clear">
-          <a href="#">
-            Clear <span class="number-done"><%= done %></span>
-            completed <span class="word-done"><%= done == 1 ? 'item' : 'items' %></span>
-          </a>
-        </span>
-      <% } %>
+    <script type="text/template" id="website-template">
+      <li class="website">
+        <a href="<%= url %>"><%= title %></a>
+      </li>
     </script>
 
   </body>
