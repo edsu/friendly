@@ -1,99 +1,57 @@
-// Load the application once the DOM is ready, using `jQuery.ready`:
-$(function(){
+window.Website = Backbone.Model.extend({
+  defaults: {
+    url: null,
+    title: null
+  },
+});
 
-  // Models
-  
-  var Website = Backbone.Model.extend({
-    defaults: {
-      url: null,
-      title: null
-    }
-  });
+window.WebsiteCollection = Backbone.Collection.extend({
+  model: Website,
+  url: '/api/websites'
+});
 
-  var WebsiteList = Backbone.Collection.extend({
-    model: Website,
-  });
+window.WebsiteListView = Backbone.View.extend({
+  tagName: "ul",
+  initialize: function() {
+    this.model.bind("reset", this.render, this);
+  },
+  render: function(eventName) {
+    $(this.el).empty();
+    _.each(this.model.models, function(website) {
+      $(this.el).append(new WebsiteListItemView({model: website}).render().el);
+    }, this);
+    return this;
+  }
+});
 
-  var websites  = new WebsiteList;
+window.WebsiteListItemView = Backbone.View.extend({
+  tagName: "li",
+  template: _.template($("#website-item-template").html()),
+  render: function(eventName) {
+    $(this.el).html(this.template(this.model.toJSON()));
+    return this;
+  }
+});
 
-  // Views
-  
-  var WebsiteView = Backbone.View.extend({
+var AppRouter = Backbone.Router.extend({
+  routes: {
+    "": "websites",
+  },
+  websites: function() {
+    var self = this;
+    this.websiteList = new WebsiteCollection();
+    this.websiteListView = new WebsiteListView({model: self.websiteList});
+    this.websiteList.fetch({async: false});
+    $("#websites").html(self.websiteListView.render().el);
+  }
+});
 
-    //... is a list tag.
-    tagName:  "li",
+app = new AppRouter();
+Backbone.history.start();
 
-    // Cache the template function for a single item.
-    template: _.template($('#item-template').html()),
-
-    // The DOM events specific to an item.
-    events: {
-      "click .check"              : "toggleDone",
-      "dblclick label.todo-content" : "edit",
-      "click span.todo-destroy"   : "clear",
-      "keypress .todo-input"      : "updateOnEnter",
-      "blur .todo-input"          : "close"
-    },
-
-    // The TodoView listens for changes to its model, re-rendering. Since there's
-    // a one-to-one correspondence between a **Todo** and a **TodoView** in this
-    // app, we set a direct reference on the model for convenience.
-    initialize: function() {
-      _.bindAll(this, 'render', 'close', 'remove');
-      this.model.bind('change', this.render);
-      this.model.bind('destroy', this.remove);
-    },
-
-    // Re-render the contents of the todo item.
-    render: function() {
-      $(this.el).html(this.template(this.model.toJSON()));
-      this.input = this.$('.todo-input');
-      return this;
-    },
-
-    // Toggle the `"done"` state of the model.
-    toggleDone: function() {
-      this.model.toggle();
-    },
-
-    // Switch this view into `"editing"` mode, displaying the input field.
-    edit: function() {
-      $(this.el).addClass("editing");
-      this.input.focus();
-    },
-
-    // Close the `"editing"` mode, saving changes to the todo.
-    close: function() {
-      this.model.save({content: this.input.val()});
-      $(this.el).removeClass("editing");
-    },
-
-    // If you hit `enter`, we're through editing the item.
-    updateOnEnter: function(e) {
-      if (e.keyCode == 13) this.close();
-    },
-
-    // Remove the item, destroy the model.
-    clear: function() {
-      this.model.clear();
-    }
-
-  });
-
-  // The Application
-  // ---------------
-
-  // Our overall **AppView** is the top-level piece of UI.
+/*
   var AppView = Backbone.View.extend({
-
-    // Instead of generating a new element, bind to the existing skeleton of
-    // the App already present in the HTML.
-    el: $("#todoapp"),
-
-    // Our template for the line of statistics at the bottom of the app.
-    statsTemplate: _.template($('#stats-template').html()),
-
-    // Delegated events for creating new items, and clearing completed ones.
+    el: $("#app"),
     events: {
       "keypress #new-todo":  "createOnEnter",
       "keyup #new-todo":     "showTooltip",
@@ -105,16 +63,14 @@ $(function(){
     // collection, when items are added or changed. Kick things off by
     // loading any preexisting todos that might be saved in *localStorage*.
     initialize: function() {
+      _.bind(this, 'render');
       _.bindAll(this, 'addOne', 'addAll', 'render', 'toggleAllComplete');
 
       this.input = this.$("#new-todo");
       this.allCheckbox = this.$(".mark-all-done")[0];
 
-      Todos.bind('add',     this.addOne);
-      Todos.bind('reset',   this.addAll);
-      Todos.bind('all',     this.render);
-
-      Todos.fetch();
+      websites.bind('add',     this.addOne);
+      websites.fetch();
     },
 
     // Re-rendering the App just means refreshing the statistics -- the rest
@@ -157,7 +113,7 @@ $(function(){
     // persisting it to *localStorage*.
     createOnEnter: function(e) {
       if (e.keyCode != 13) return;
-      Todos.create(this.newAttributes());
+      websites.create(this.newAttributes());
       this.input.val('');
     },
 
@@ -189,4 +145,4 @@ $(function(){
   // Finally, we kick things off by creating the **App**.
   var App = new AppView;
 
-});
+*/
