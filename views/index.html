@@ -21,16 +21,28 @@
     <section id="websites">
     </section>
 
+    <section id="website">
+    </section>
+
     </div>
 
     <!-- Templates -->
 
     <script type="text/template" id="website-item-template">
       <li class="website">
-        <a href="<%= url %>"><%= title %></a>
+        <a href="#websites/<%= id %>"><%= title %></a>
       </li>
-  </script>
+    </script>
 
+    <script type="text/template" id="website-detail">
+        <dl>
+            <dt>Title</dt>
+            <dd><%= title %></dd>
+            <dt>URL</dt>
+            <dd><%= url %></dd>
+        </dl>
+    </script>
+        
     <script src="js/jquery-1.8.3.min.js"></script>
     <script src="js/underscore-min-1.4.3.js"></script>
     <script src="js/backbone-min-0.9.9.js"></script>
